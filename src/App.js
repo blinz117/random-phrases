@@ -70,6 +70,12 @@ export default function App() {
     setSavedItems(newMap);
   });
 
+  const deleteSavedItem = useCallback((itemId) => {
+    const newMap = new Map(savedItems);
+    newMap.delete(itemId);
+    setSavedItems(newMap);
+  });
+
   return (
     <div className="App">
       {Array.from(wordState, (mapElement) => {
@@ -90,7 +96,14 @@ export default function App() {
       {Array.from(savedItems, (mapElement) => {
         return mapElement;
       }).map((item) => (
-        <p key={item[0]}>{item[1]}</p>
+        <p
+          onClick={() => {
+            deleteSavedItem(item[0]);
+          }}
+          key={item[0]}
+        >
+          {item[1]}
+        </p>
       ))}
     </div>
   );
