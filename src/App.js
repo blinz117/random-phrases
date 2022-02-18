@@ -1,7 +1,8 @@
 import React from 'react';
 import './style.css';
+import { generateMapWithIdsForListItems } from './ids.js';
 import RiTa from 'rita';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
 const generateWord = () => {
   return RiTa.randomWord({
@@ -54,30 +55,42 @@ const generateWordList = (count = 20) => {
   return [...Array(count)].map(generateWord);
 };
 
+const generatePhraseListWithIds = (count = 15) => {
+  const phraseList = generatePhraseList();
+  return generateMapWithIdsForListItems(phraseList);
+};
+
 export default function App() {
-  const [wordState, setWordState] = useState(generatePhraseList());
-  const [savedItems, setSavedItems] = useState([]);
+  const [wordState, setWordState] = useState(generatePhraseListWithIds());
+  const [savedItems, setSavedItems] = useState(new Map());
 
   const saveItem = useCallback((item) => {
-    setSavedItems(savedItems.concat([item]));
+    const newMap = new Map(savedItems);
+    newMap.set(item[0], item[1]);
+    setSavedItems(newMap);
   });
 
   return (
     <div className="App">
-      {wordState.map((element) => (
+      {Array.from(wordState, (mapElement) => {
+        return mapElement;
+      }).map((element) => (
         <p
           onClick={() => {
             saveItem(element);
           }}
+          key={element[0]}
         >
-          {element}
+          {element[1]}
         </p>
       ))}
-      <button onClick={() => setWordState(generatePhraseList())}>
+      <button onClick={() => setWordState(generatePhraseListWithIds())}>
         New list
       </button>
-      {savedItems.map((item) => (
-        <p>{item}</p>
+      {Array.from(savedItems, (mapElement) => {
+        return mapElement;
+      }).map((item) => (
+        <p key={item[0]}>{item[1]}</p>
       ))}
     </div>
   );
