@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { jsx, css } from '@emotion/react';
 import React from 'react';
 import './style.css';
 import { generateMapWithIdsForListItems } from './ids.js';
@@ -60,6 +62,14 @@ const generatePhraseListWithIds = (count = 15) => {
   return generateMapWithIdsForListItems(phraseList);
 };
 
+const itemStyle = css`
+width: fit-content;
+padding: 8px;
+background-color: lightgray;
+border-radius: 8px;
+font-family: Helvetica, sans-serif;
+`;
+
 export default function App() {
   const [wordState, setWordState] = useState(generatePhraseListWithIds());
   const [savedItems, setSavedItems] = useState(new Map());
@@ -82,6 +92,7 @@ export default function App() {
         return mapElement;
       }).map((element) => (
         <p
+          css={itemStyle}
           onClick={() => {
             saveItem(element);
           }}
@@ -90,13 +101,21 @@ export default function App() {
           {element[1]}
         </p>
       ))}
-      <button onClick={() => setWordState(generatePhraseListWithIds())}>
+      <button
+        css={css`
+        font-size: 16px;
+        padding: 8px 16px;
+      border-radius: 8px;
+    `}
+        onClick={() => setWordState(generatePhraseListWithIds())}
+      >
         New list
       </button>
       {Array.from(savedItems, (mapElement) => {
         return mapElement;
       }).map((item) => (
         <p
+          css={itemStyle}
           onClick={() => {
             deleteSavedItem(item[0]);
           }}
